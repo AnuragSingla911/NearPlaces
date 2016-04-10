@@ -212,7 +212,7 @@ public class ChoiceActivity extends AppCompatActivity implements View.OnClickLis
                 Toast.makeText(ChoiceActivity.this, "no location found for your requested search", Toast.LENGTH_SHORT).show();
             }
 
-        } else {
+        } else if(reqCode == NetworkDispatcher.REQUEST_CODE_SUGGESTION){
             final ListView listview = (ListView) findViewById(R.id.search_layout);
             listview.setAdapter(new SuggestionAdapter(StaticContainer.mSuggestions, this));
             listview.setVisibility(View.VISIBLE);
@@ -230,13 +230,15 @@ public class ChoiceActivity extends AppCompatActivity implements View.OnClickLis
                     }
                     Location l = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                    NetworkDispatcher dispatcher = new NetworkDispatcher(l.getLatitude(), l.getLongitude(), 5000,
-                            StaticContainer.mSuggestions.get(position).getSuggestion(), true, NetworkDispatcher.REQUEST_CODE_NEAR_PLACE);
+                    NetworkDispatcher dispatcher = new NetworkDispatcher(StaticContainer.mSuggestions.get(position).getPlaceID());
                     dispatcher.setmCallBack(ChoiceActivity.this);
                     dispatcher.start();
                 }
             });
 
+        } else if (reqCode == NetworkDispatcher.REQUEST_CODE_PLACE_DETAILS){
+            Intent intent = new Intent(this, MapsActivity.class);
+            startActivity(intent);
         }
 
     }
